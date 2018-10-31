@@ -20,6 +20,11 @@ services:
     image: "${IMAGE_PHPFPM_NAME}"
     build:
       context: ./php-fpm
+      args:
+        - INSTALL_PHALCON=${INSTALL_PHALCON}
+        - PHALCON_VERSION=${PHALCON_VERSION}
+    environment:
+      PHALCON_VERSION: ${PHALCON_VERSION}
     volumes:
       - ${SYMFONY_APP_PATH}:/srv/app
       - ./logs/symfony:/srv/app/var/log
