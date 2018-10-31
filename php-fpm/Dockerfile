@@ -126,10 +126,10 @@ RUN echo 'alias sf="php bin/console"' >> ~/.bashrc
 
 # TODO: provide better description in Readme.md!!
 # For better performance we can move var/cache folder from sync between host and container
-RUN mkdir -p /srv/app/var/cache/dev
-RUN mkdir -p /srv/app/var/cache/prod
-RUN mkdir -p /srv/app/var/log
+RUN mkdir -p /srv/var/cache/dev
+RUN mkdir -p /srv/var/cache/prod
+RUN mkdir -p /srv/var/log
 # TODO: need to replace to nobody user permissions
-RUN chmod 777 -R /srv/app/var
+RUN chmod 777 -R /srv/var
 
 WORKDIR /srv/app
