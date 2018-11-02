@@ -77,7 +77,8 @@ RUN apt-get update && apt-get install -y \
         wddx \
         xmlrpc \
         xsl \
-        zip
+        zip \
+        pcntl
 
 RUN pecl install apcu && docker-php-ext-enable apcu
 # RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
