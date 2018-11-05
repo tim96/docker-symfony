@@ -12,6 +12,11 @@ RUN apt-get update && apt-get install -y \
     mc \
     nano \
     bash \
+    gcc \
+    make \
+    re2c \
+    sudo \
+    # php-dev \
     autoconf \
     build-essential \
     libbsd-dev \
@@ -80,6 +85,9 @@ RUN apt-get update && apt-get install -y \
         zip \
         pcntl
 
+# RUN php -v
+# RUN phpize -v
+
 RUN pecl install apcu && docker-php-ext-enable apcu
 # RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
 
@@ -94,8 +102,7 @@ ENV PHALCON_VERSION ${PHALCON_VERSION}
 
 # todo: move 7.2 to new constant
 RUN if [ $INSTALL_PHALCON = true ]; then \
-    apt-get update && apt-get install -y unzip libpcre3-dev gcc make re2c \
-    && curl -L -o /tmp/cphalcon.zip https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.zip \
+    curl -L -o /tmp/cphalcon.zip https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.zip \
     && unzip -d /tmp/ /tmp/cphalcon.zip \
     && cd /tmp/cphalcon-${PHALCON_VERSION}/build \
     && ./install \
@@ -108,6 +115,22 @@ RUN if [ $INSTALL_PHALCON = true ]; then \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer --version
+
+ENV ZEPHIRDIR=/usr/share/zephir \
+    PATH=$PATH:/usr/share/zephir/bin
+
+ARG INSTALL_ZEPHIR=false
+RUN if [ $INSTALL_ZEPHIR = true ]; then \
+    mkdir -p /usr/share/zephir && \
+    git clone --depth=1 -v https://github.com/phalcon/zephir /tmp/zephir && \
+    cd /tmp/zephir && \
+    ./install -c && \
+    cd /usr/share/zephir && \
+    composer install && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    zephir version && \
+    zephir help \
+;fi
 
 COPY ./php.ini /usr/local/etc/php/conf.d
 
