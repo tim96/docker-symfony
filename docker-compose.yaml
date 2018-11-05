@@ -84,3 +84,29 @@ services:
       - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
     networks:
       - backend
+
+### Redis ################################################
+  redis:
+    container_name: "${CONTAINER_REDIS_NAME}"
+    image: "${IMAGE_REDIS_NAME}"
+    build: ./redis
+    volumes:
+      - ${DATA_PATH_HOST}/redis:/data
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend
+
+### Memcached ############################################
+  memcached:
+    container_name: "${CONTAINER_MEMCACHED_NAME}"
+    image: "${IMAGE_MEMCACHED_NAME}"
+    build: ./memcached
+    volumes:
+      - ${DATA_PATH_HOST}/memcached:/var/lib/memcached
+    ports:
+      - "${MEMCACHED_HOST_PORT}:11211"
+    depends_on:
+      - php-fpm
+    networks:
+      - backend

@@ -52,11 +52,18 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libpq-dev \
+    librabbitmq-dev \
+    libssl-dev \
+    # libressl-dev \
+    # libssl1.0-dev \
+    # libssh-dev \
 	&& docker-php-ext-install -j$(nproc) iconv \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 	&& docker-php-ext-install -j$(nproc) gd \
 	&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install imap \
     && docker-php-ext-install \
         bcmath \
@@ -83,6 +90,9 @@ RUN apt-get update && apt-get install -y \
         xmlrpc \
         xsl \
         zip \
+        pgsql \
+        pdo_pgsql \
+        tokenizer \
         pcntl
 
 # RUN php -v
@@ -95,6 +105,9 @@ RUN pecl install memcached && docker-php-ext-enable memcached
 RUN pecl install redis && docker-php-ext-enable redis
 RUN pecl install imagick && docker-php-ext-enable imagick
 RUN pecl install gnupg && docker-php-ext-enable gnupg
+RUN pecl install swoole && docker-php-ext-enable swoole
+RUN pecl install mongodb && docker-php-ext-enable mongodb
+RUN pecl install amqp && docker-php-ext-enable amqp
 
 ARG INSTALL_PHALCON=false
 ARG PHALCON_VERSION
