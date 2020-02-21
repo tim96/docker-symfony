@@ -35,7 +35,21 @@ https://github.com/tim96/Reverse-proxy
    SYMFONY_APP_PATH=../symfony
    ```
    If you have Symfony project just set path for symfony folder here.
-   If you want to start new project using Symfony 4, just call next command (Select one for your platform).
+   If you don't have vendor folder for your project you can install it without running locally composer and php:
+   Sometimes dependencies or Composer scripts require the availability of certain PHP extensions. 
+   You can work around this by add `--ignore-platform-reqs --no-scripts`
+   ```
+   # Linux/MacOS
+   docker run --rm -v $(pwd):/app composer install -vvv --ignore-platform-reqs --no-scripts
+    
+   # Windows Powershell:
+   docker run --rm -v ${PWD}:/app --name symfony-image composer install -vvv --ignore-platform-reqs --no-scripts
+    
+   # Windows Terminal (cmd):
+   docker run --rm -v %cd%:/app --name symfony-image composer  install -vvv --ignore-platform-reqs --no-scripts
+   ```
+   
+   If you want to start a new project using Symfony 4, just call next command (Select one for your platform).
    You don't need locally composer or php to install new Symfony project.
    ```
    # Linux/MacOS

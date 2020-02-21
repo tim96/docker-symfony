@@ -12,6 +12,11 @@ RUN apt-get update && apt-get install -y \
     mc \
     nano \
     bash \
+    gcc \
+    make \
+    re2c \
+    sudo \
+    # php-dev \
     autoconf \
     build-essential \
     libbsd-dev \
@@ -48,11 +53,18 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
+    libpq-dev \
+    librabbitmq-dev \
+    libssl-dev \
+    # libressl-dev \
+    # libssl1.0-dev \
+    # libssh-dev \
 	&& docker-php-ext-install -j$(nproc) iconv \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 	&& docker-php-ext-install -j$(nproc) gd \
 	&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install imap \
     && docker-php-ext-install \
         bcmath \
@@ -78,7 +90,14 @@ RUN apt-get update && apt-get install -y \
         wddx \
         xmlrpc \
         xsl \
-        zip
+        zip \
+        pgsql \
+        pdo_pgsql \
+        tokenizer \
+        pcntl
+
+# RUN php -v
+# RUN phpize -v
 
 RUN pecl install apcu && docker-php-ext-enable apcu
 # RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
@@ -87,6 +106,9 @@ RUN pecl install memcached && docker-php-ext-enable memcached
 RUN pecl install redis && docker-php-ext-enable redis
 RUN pecl install imagick && docker-php-ext-enable imagick
 RUN pecl install gnupg && docker-php-ext-enable gnupg
+RUN pecl install swoole && docker-php-ext-enable swoole
+RUN pecl install mongodb && docker-php-ext-enable mongodb
+RUN pecl install amqp && docker-php-ext-enable amqp
 
 ARG INSTALL_PHALCON=false
 ARG PHALCON_VERSION
@@ -94,8 +116,7 @@ ENV PHALCON_VERSION ${PHALCON_VERSION}
 
 # todo: move 7.2 to new constant
 RUN if [ $INSTALL_PHALCON = true ]; then \
-    apt-get update && apt-get install -y unzip libpcre3-dev gcc make re2c \
-    && curl -L -o /tmp/cphalcon.zip https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.zip \
+    curl -L -o /tmp/cphalcon.zip https://github.com/phalcon/cphalcon/archive/v${PHALCON_VERSION}.zip \
     && unzip -d /tmp/ /tmp/cphalcon.zip \
     && cd /tmp/cphalcon-${PHALCON_VERSION}/build \
     && ./install \
@@ -108,6 +129,22 @@ RUN if [ $INSTALL_PHALCON = true ]; then \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer --version
+
+ENV ZEPHIRDIR=/usr/share/zephir \
+    PATH=$PATH:/usr/share/zephir/bin
+
+ARG INSTALL_ZEPHIR=false
+RUN if [ $INSTALL_ZEPHIR = true ]; then \
+    mkdir -p /usr/share/zephir && \
+    git clone --depth=1 -v https://github.com/phalcon/zephir /tmp/zephir && \
+    cd /tmp/zephir && \
+    ./install -c && \
+    cd /usr/share/zephir && \
+    composer install && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    zephir version && \
+    zephir help \
+;fi
 
 COPY ./php.ini /usr/local/etc/php/conf.d
 
