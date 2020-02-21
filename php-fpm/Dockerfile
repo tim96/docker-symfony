@@ -18,7 +18,8 @@ RUN apt-get update && apt-get install -y \
     libbz2-dev \
     libc-client2007e-dev \
     libc6-dev \
-    libcurl3 \
+    # libcurl3 \
+    libcurl4 \
     libcurl4-openssl-dev \
     libedit-dev \
     libedit2 \
