@@ -1,5 +1,6 @@
 # See https://github.com/docker-library/php/blob/master/7.2/fpm/Dockerfile
-FROM php:7.2-fpm
+# See https://github.com/docker-library/php/blob/master/7.3/fpm/Dockerfile
+FROM php:7.3-fpm
 ARG TIMEZONE
 
 RUN apt-get update && apt-get install -y \
@@ -56,10 +57,12 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     librabbitmq-dev \
     libssl-dev \
+    libzip-dev
     # libressl-dev \
     # libssl1.0-dev \
     # libssh-dev \
-	&& docker-php-ext-install -j$(nproc) iconv \
+
+RUN docker-php-ext-install -j$(nproc) iconv \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 	&& docker-php-ext-install -j$(nproc) gd \
 	&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
@@ -79,8 +82,11 @@ RUN apt-get update && apt-get install -y \
         mbstring \
         mysqli \
         opcache \
+        pcntl \
         pdo \
         pdo_mysql \
+        pdo_pgsql \
+        pgsql \
         shmop \
         soap \
         sockets \
@@ -91,16 +97,16 @@ RUN apt-get update && apt-get install -y \
         xmlrpc \
         xsl \
         zip \
-        pgsql \
-        pdo_pgsql \
-        tokenizer \
-        pcntl
+        tokenizer
 
 # RUN php -v
 # RUN phpize -v
 
 RUN pecl install apcu && docker-php-ext-enable apcu
 # RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
+
+# For phalcon 4.0.4
+RUN pecl install psr && docker-php-ext-enable psr
 
 RUN pecl install memcached && docker-php-ext-enable memcached
 RUN pecl install redis && docker-php-ext-enable redis

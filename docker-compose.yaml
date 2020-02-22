@@ -8,13 +8,13 @@ networks:
 #  # VIRTUAL_HOST=www.example.com,example.com
 #  # LETSENCRYPT_HOST=www.example.com,example.com
 #  # LETSENCRYPT_EMAIL=info@example.com
-#  default:
-#    external:
-#      name: nginx-proxy
+  default:
+    external:
+      name: nginx-proxy
 
 services:
 ### PHP-FPM ##############################################
-  php-fpm:
+  php-fpm-1:
     restart: always
     container_name: "${CONTAINER_PHPFPM_NAME}"
     image: "${IMAGE_PHPFPM_NAME}"
@@ -33,7 +33,7 @@ services:
       - backend
 
 ### NGINX ##############################################
-  nginx:
+  nginx-1:
     restart: always
     container_name: "${CONTAINER_NGINX_NAME}"
     image: "${IMAGE_NGINX_NAME}"
@@ -43,7 +43,7 @@ services:
         - PHP_UPSTREAM_CONTAINER=${NGINX_PHP_UPSTREAM_CONTAINER}
         - PHP_UPSTREAM_PORT=${NGINX_PHP_UPSTREAM_PORT}
     depends_on:
-      - php-fpm
+      - php-fpm-1
     environment:
       VIRTUAL_HOST: ${VIRTUAL_HOST}
       LETSENCRYPT_HOST: ${LETSENCRYPT_HOST}
@@ -65,7 +65,7 @@ services:
       - default
 
 ### MySQL ################################################
-  db:
+  db-1:
     restart: always
     container_name: "${CONTAINER_MYSQL_NAME}"
     image: "${IMAGE_MYSQL_NAME}"
@@ -92,8 +92,8 @@ services:
     build: ./redis
     volumes:
       - ${DATA_PATH_HOST}/redis:/data
-    ports:
-      - "${REDIS_PORT}:6379"
+#    ports:
+#      - "${REDIS_PORT}:6379"
     networks:
       - backend
 
@@ -104,9 +104,9 @@ services:
     build: ./memcached
     volumes:
       - ${DATA_PATH_HOST}/memcached:/var/lib/memcached
-    ports:
-      - "${MEMCACHED_HOST_PORT}:11211"
+#    ports:
+#      - "${MEMCACHED_HOST_PORT}:11211"
     depends_on:
-      - php-fpm
+      - php-fpm-1
     networks:
       - backend
