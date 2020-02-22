@@ -1,9 +1,9 @@
-FROM nginx:1.14-alpine
+FROM nginx:1.16-alpine
 
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache bash \
-    && adduser -D -H -u 1000 -s /bin/bash www-data
+    && adduser -D -H -u 1000 -s /bin/bash -Gwww-data www-data
 
 # RUN nginx -v
 
