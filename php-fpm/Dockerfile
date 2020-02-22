@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     make \
     re2c \
     sudo \
+    vim \
     # php-dev \
     autoconf \
     build-essential \
