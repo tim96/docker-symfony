@@ -134,3 +134,15 @@ services:
 #      interval: 10s
 #      timeout: 10s
 #      retries: 5
+
+  ### ElasticSearch ############################################
+  elasticsearch:
+    container_name: "${CONTAINER_ELASTICSEARCH_NAME}"
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - discovery.type=single-node
+#    ports:
+#      - "9200:9200"
+    volumes:
+      - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elastcisearch.yml
