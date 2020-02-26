@@ -110,3 +110,27 @@ services:
       - php-fpm-1
     networks:
       - backend
+
+### RabbitMQ ############################################
+  rabbitmq:
+    container_name: "${CONTAINER_RABBITMQ_NAME}"
+    image: "${IMAGE_RABBITMQ_NAME}"
+    build: ./rabbitmq
+    volumes:
+      - ./logs/rabbitmq:/var/log/rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+    depends_on:
+      - php-fpm-1
+    networks:
+      - backend
+#    healthcheck:
+#      test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
