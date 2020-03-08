@@ -87,6 +87,7 @@ RUN docker-php-ext-install -j$(nproc) iconv \
         pdo \
         pdo_mysql \
         pdo_pgsql \
+        pdo_sqlite \
         pgsql \
         shmop \
         soap \
