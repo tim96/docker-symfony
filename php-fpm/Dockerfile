@@ -58,7 +58,8 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     librabbitmq-dev \
     libssl-dev \
-    libzip-dev
+    libzip-dev \
+    zlib1g-dev
     # libressl-dev \
     # libssl1.0-dev \
     # libssh-dev \
@@ -117,6 +118,7 @@ RUN pecl install gnupg && docker-php-ext-enable gnupg
 RUN pecl install swoole && docker-php-ext-enable swoole
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 RUN pecl install amqp && docker-php-ext-enable amqp
+RUN pecl install uuid && docker-php-ext-enable uuid
 
 ARG INSTALL_PHALCON=false
 ARG PHALCON_VERSION
