@@ -18,7 +18,6 @@ RUN apt-get update && apt-get install -y \
     re2c \
     sudo \
     vim \
-    # php-dev \
     autoconf \
     build-essential \
     libbsd-dev \
@@ -140,19 +139,12 @@ RUN if [ $INSTALL_PHALCON = true ]; then \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer --version
 
-ENV ZEPHIRDIR=/usr/share/zephir \
-    PATH=$PATH:/usr/share/zephir/bin
-
 ARG INSTALL_ZEPHIR=false
 RUN if [ $INSTALL_ZEPHIR = true ]; then \
-    mkdir -p /usr/share/zephir && \
-    git clone --depth=1 -v https://github.com/phalcon/zephir /tmp/zephir && \
-    cd /tmp/zephir && \
-    ./install -c && \
-    cd /usr/share/zephir && \
-    composer install && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    zephir version && \
+    # todo: add env param for zephir version
+    curl -L -o /usr/local/bin/zephir https://github.com/phalcon/zephir/releases/download/0.12.17/zephir.phar && \
+    chmod +x /usr/local/bin/zephir && \
+    zephir --version && \
     zephir help \
 ;fi
 
