@@ -1,6 +1,6 @@
 # See https://github.com/docker-library/php/blob/master/7.2/fpm/Dockerfile
 # See https://github.com/docker-library/php/blob/master/7.3/fpm/Dockerfile
-FROM php:7.3-fpm
+FROM php:7.4-fpm
 ARG TIMEZONE
 
 RUN apt-get update && apt-get install -y \
@@ -24,7 +24,6 @@ RUN apt-get update && apt-get install -y \
     libbz2-dev \
     libc-client2007e-dev \
     libc6-dev \
-    # libcurl3 \
     libcurl4 \
     libcurl4-openssl-dev \
     libedit-dev \
@@ -58,13 +57,15 @@ RUN apt-get update && apt-get install -y \
     librabbitmq-dev \
     libssl-dev \
     libzip-dev \
-    zlib1g-dev
-    # libressl-dev \
-    # libssl1.0-dev \
-    # libssh-dev \
+    zlib1g-dev \
+    libonig-dev \
+    && apt-get autoclean \
+    && apt-get clean \
+    && apt-get autoremove \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN docker-php-ext-install -j$(nproc) iconv \
-	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+	&& docker-php-ext-configure gd --with-freetype --with-jpeg \
 	&& docker-php-ext-install -j$(nproc) gd \
 	&& docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
@@ -95,7 +96,6 @@ RUN docker-php-ext-install -j$(nproc) iconv \
         sysvmsg \
         sysvsem \
         sysvshm \
-        wddx \
         xmlrpc \
         xsl \
         zip \
@@ -104,20 +104,29 @@ RUN docker-php-ext-install -j$(nproc) iconv \
 # RUN php -v
 # RUN phpize -v
 
-RUN pecl install apcu && docker-php-ext-enable apcu
-# RUN echo "extension=apcu.so" > /usr/local/etc/php/conf.d/apcu.ini
+RUN pecl install apcu && docker-php-ext-enable apcu \
+ # For phalcon 4.*
+ && pecl install psr && docker-php-ext-enable psr \
+ && pecl install memcached && docker-php-ext-enable memcached \
+ && pecl install redis && docker-php-ext-enable redis \
+ && pecl install imagick && docker-php-ext-enable imagick \
+ && pecl install gnupg && docker-php-ext-enable gnupg \
+ && pecl install swoole && docker-php-ext-enable swoole \
+ && pecl install mongodb && docker-php-ext-enable mongodb \
+ && pecl install amqp && docker-php-ext-enable amqp \
+ && pecl install uuid && docker-php-ext-enable uuid \
+ && pecl install xhprof && docker-php-ext-enable xhprof
 
-# For phalcon 4.0.4
-RUN pecl install psr && docker-php-ext-enable psr
-
-RUN pecl install memcached && docker-php-ext-enable memcached
-RUN pecl install redis && docker-php-ext-enable redis
-RUN pecl install imagick && docker-php-ext-enable imagick
-RUN pecl install gnupg && docker-php-ext-enable gnupg
-RUN pecl install swoole && docker-php-ext-enable swoole
-RUN pecl install mongodb && docker-php-ext-enable mongodb
-RUN pecl install amqp && docker-php-ext-enable amqp
-RUN pecl install uuid && docker-php-ext-enable uuid
+# install xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+# Disable xdebug
+#RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#RUN echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+#RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 ARG INSTALL_PHALCON=false
 ARG PHALCON_VERSION
@@ -150,18 +159,6 @@ RUN if [ $INSTALL_ZEPHIR = true ]; then \
 
 COPY ./php.ini /usr/local/etc/php/conf.d
 
-# install xdebug
-#RUN pecl install xdebug && docker-php-ext-enable xdebug
-# Disable xdebug
-#RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "display_startup_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "display_errors = On" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.remote_enable=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.remote_connect_back=1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.idekey=\"PHPSTORM\"" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-#RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
-# RUN echo 'alias sf="php app/console"' >> ~/.bashrc
 RUN echo 'alias sf="php bin/console"' >> ~/.bashrc
 
 # TODO: provide better description in Readme.md!!

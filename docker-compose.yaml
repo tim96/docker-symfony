@@ -28,7 +28,7 @@ services:
       PHALCON_VERSION: ${PHALCON_VERSION}
     volumes:
       - ${SYMFONY_APP_PATH}:/srv/app
-      - ./logs/symfony:/srv/app/var/log
+      - ./logs/symfony:/srv/var/log
     networks:
       - backend
 
@@ -156,9 +156,9 @@ services:
     #env_file:
     #  - postgres/database.env # configure postgres
     environment:
-      - POSTGRES_USER="${POSTGRESQL_USER}"
-      - POSTGRES_PASSWORD="${POSTGRESQL_PASSWORD}"
-      - POSTGRES_DB="${POSTGRESQL_DB}"
+      - POSTGRES_USER=${POSTGRESQL_USER}
+      - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
+      - POSTGRES_DB=${POSTGRESQL_DB}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data/
     networks:
