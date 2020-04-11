@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     vim \
     autoconf \
     build-essential \
+    software-properties-common \
     libbsd-dev \
     libbz2-dev \
     libc-client2007e-dev \
@@ -77,6 +78,7 @@ RUN docker-php-ext-install -j$(nproc) iconv \
         calendar \
         dba \
         exif \
+        ffi \
         gettext \
         gmp \
         intl \
