@@ -16,16 +16,8 @@ services:
 ### PHP-FPM ##############################################
   php-fpm-1:
     restart: always
-    container_name: "${CONTAINER_PHPFPM_NAME}"
-    image: "${IMAGE_PHPFPM_NAME}"
     build:
       context: ./php-fpm
-      args:
-        - INSTALL_PHALCON=${INSTALL_PHALCON}
-        - PHALCON_VERSION=${PHALCON_VERSION}
-        - INSTALL_ZEPHIR=${INSTALL_ZEPHIR}
-    environment:
-      PHALCON_VERSION: ${PHALCON_VERSION}
     volumes:
       - ${SYMFONY_APP_PATH}:/srv/app
       - ./logs/symfony:/srv/var/log
@@ -35,8 +27,6 @@ services:
 ### NGINX ##############################################
   nginx-1:
     restart: always
-    container_name: "${CONTAINER_NGINX_NAME}"
-    image: "${IMAGE_NGINX_NAME}"
     build:
       context: ./nginx
       args:
@@ -67,8 +57,6 @@ services:
 ### MySQL ################################################
   db-1:
     restart: always
-    container_name: "${CONTAINER_MYSQL_NAME}"
-    image: "${IMAGE_MYSQL_NAME}"
     build:
       context: ./mysql
       args:
@@ -80,7 +68,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - TZ=${WORKSPACE_TIMEZONE}
     volumes:
-      - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
+    #  - ${DATA_PATH_HOST}/mysql:/var/lib/mysql
       - ${MYSQL_ENTRYPOINT_INITDB}:/docker-entrypoint-initdb.d
     networks:
       - backend
@@ -89,11 +77,9 @@ services:
 
 ### Redis ################################################
   redis:
-    container_name: "${CONTAINER_REDIS_NAME}"
-    image: "${IMAGE_REDIS_NAME}"
     build: ./redis
-    volumes:
-      - ${DATA_PATH_HOST}/redis:/data
+    #volumes:
+    #  - ${DATA_PATH_HOST}/redis:/data
 #    ports:
 #      - "${REDIS_PORT}:6379"
     networks:
@@ -101,11 +87,9 @@ services:
 
 ### Memcached ############################################
   memcached:
-    container_name: "${CONTAINER_MEMCACHED_NAME}"
-    image: "${IMAGE_MEMCACHED_NAME}"
     build: ./memcached
-    volumes:
-      - ${DATA_PATH_HOST}/memcached:/var/lib/memcached
+    #volumes:
+    #  - ${DATA_PATH_HOST}/memcached:/var/lib/memcached
 #    ports:
 #      - "${MEMCACHED_HOST_PORT}:11211"
     depends_on:
@@ -115,7 +99,6 @@ services:
 
 ### RabbitMQ ############################################
   rabbitmq:
-    image: "${IMAGE_RABBITMQ_NAME}"
     restart: always
     build: ./rabbitmq
     volumes:
@@ -139,7 +122,7 @@ services:
 
   ### ElasticSearch ############################################
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
     restart: always
     environment:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -151,7 +134,7 @@ services:
 
 ### PostgreSQL ################################################
   postgres-1:
-    image: postgres:12.2
+    image: postgres:12.5
     restart: always
     #env_file:
     #  - postgres/database.env # configure postgres
@@ -159,8 +142,8 @@ services:
       - POSTGRES_USER=${POSTGRESQL_USER}
       - POSTGRES_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRES_DB=${POSTGRESQL_DB}
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data/
+    #volumes:
+    #  - ./data/postgres:/var/lib/postgresql/data/
     networks:
       - backend
     #ports:
@@ -176,3 +159,13 @@ services:
       - backend
     #ports:
     #  - "8123:8123"
+
+
+  ### Mongo ################################################
+  mongo-1:
+    image: mongo:4.4
+    restart: always
+    networks:
+      - backend
+    #ports:
+    #  - "27017:27017"

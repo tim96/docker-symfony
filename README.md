@@ -73,10 +73,13 @@ https://github.com/tim96/Reverse-proxy
 5. Go to `tim96-docker-symfony` folder
    Need to configure `.env` file from `.env.dist` to set up environment parameters
    
-6. Run `docker-compose build` for build everything
+6. Create network:  
+   `docker network create nginx-proxy`
 
-7. Run `docker-compose up` for run application or `docker-compose up -d` to run containers in background
+7. Run `docker-compose build` for build everything
 
-8. Run `docker-compose` to check that all containers were started.
+8. Run `docker-compose up` for run application or `docker-compose up -d` to run containers in background
 
-9. Open `localhost:8081`. By default we are using `NGINX_PORT=8081`. If you need to change port, just change value in `.env` file
+9. Run `docker-compose` to check that all containers were started.
+
+10. Open `localhost:8081`. By default we are using `NGINX_PORT=8081`. If you need to change port, just change value in `.env` file
