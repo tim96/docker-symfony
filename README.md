@@ -49,16 +49,22 @@ https://github.com/tim96/Reverse-proxy
    docker run --rm -v %cd%:/app --name symfony-image composer  install -vvv --ignore-platform-reqs --no-scripts
    ```
    
-   If you want to start a new project using Symfony 4, just call next command (Select one for your platform).
+   If you want to start a new project using Symfony 5, just call next command (Select one for your platform).
    You don't need locally composer or php to install new Symfony project.
    ```
    # Linux/MacOS
    docker run --rm -v $(pwd):/app --name symfony-image composer create-project symfony/website-skeleton symfony
-    
+   # Install light version of symfony (run this if you are building a microservice, console application or API):
+   docker run --rm -v $(pwd):/app --name symfony-image composer create-project symfony/skeleton symfony
+   
    # Windows Powershell:
    docker run --rm -v ${PWD}:/app --name symfony-image composer create-project symfony/website-skeleton symfony
+   # Install light version of symfony (run this if you are building a microservice, console application or API):   
+   docker run --rm -v ${PWD}:/app --name symfony-image composer create-project symfony/skeleton symfony
     
    # Windows Terminal (cmd):
+   docker run --rm -v %cd%:/app --name symfony-image composer create-project symfony/website-skeleton symfony
+   # Install light version of symfony (run this if you are building a microservice, console application or API):
    docker run --rm -v %cd%:/app --name symfony-image composer create-project symfony/website-skeleton symfony
    ```
    
