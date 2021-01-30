@@ -1,7 +1,7 @@
 Symfony docker compose environment
 ==========================
 
-Docker compose configuration for running Symfony 4 (PHP 7.3 / Mysql 5.7 / Nginx 16.0).
+Docker compose configuration for running Symfony 4 (PHP 8.0 / Nginx 18.0).
 
 You can using it with nginx reverse proxy with https certifactes and etc.  
 https://github.com/tim96/Reverse-proxy
