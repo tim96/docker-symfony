@@ -16,8 +16,9 @@ services:
 ### PHP-FPM ##############################################
   php-fpm-1:
     restart: always
-    build:
-      context: ./php-fpm
+    image: tim96/php-fpm-starter-image:1.0.0
+    #build:
+    #  context: ./php-fpm
     volumes:
       - ${SYMFONY_APP_PATH}:/srv/app
       - ./logs/symfony:/srv/var/log
